@@ -1,3 +1,6 @@
+# PreciseCpsCounter
+Latest development phars: https://poggit.pmmp.io/ci/luca28pet/PreciseCpsCounter
+
 **PreciseCpsCounter** is an API that can measure the CPS (clicks per second) of a player (all left clicks are taken into account).
 You can use PreciseCpsCounter from other plugins to get the CPS of a player using the public function getCps:
 
