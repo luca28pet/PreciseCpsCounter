@@ -1,0 +1,6 @@
+name: PreciseCpsCounter
+main: luca28pet\PreciseCpsCounter\Main
+api: 3.0.0
+version: 0.0.1
+description: Yet another cps counter
+author: luca28pet
