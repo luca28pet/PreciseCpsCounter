@@ -69,11 +69,14 @@ class Main extends PluginBase implements Listener{
     }
 
     public function packetReceive(DataPacketReceiveEvent $e) : void{
-        if($e->getPacket()::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $e->getPacket()->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
-            $this->addClick($e->getPlayer());
-        }elseif($e->getPacket()::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $e->getPacket()->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE){
-            $this->addClick($e->getPlayer());
-        }elseif($e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerActionPacket::ACTION_START_BREAK){
+        if(
+            isset($this->clicksData[$e->getPlayer()->getLowerCaseName()]) &&
+            (
+                ($e->getPacket()::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $e->getPacket()->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) ||
+                ($e->getPacket()::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $e->getPacket()->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) ||
+                ($e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerActionPacket::ACTION_START_BREAK)
+            )
+        ){
             $this->addClick($e->getPlayer());
         }
     }
