@@ -18,3 +18,7 @@ An example of how you can use this plugin:
     ```
 
 Apparently, it does not work with CPSs greater than 30.
+
+## Known Issues
+**Incorrect CPS measurement when hitting blocks**
+If a click is well-timed and you manage to initiate the breaking of 2 (or more) blocks with one click, it will result as 2+ clicks because the client sends two PlayerActionPackets.
