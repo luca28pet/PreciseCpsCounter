@@ -1,6 +1,8 @@
 # PreciseCpsCounter
 Latest development phars: https://poggit.pmmp.io/ci/luca28pet/PreciseCpsCounter
 
+ScoreHud addon: https://gist.github.com/luca28pet/34ae893290041a8d238860c5c91b4a60
+
 **PreciseCpsCounter** is an API that can measure the CPS (clicks per second) of a player (all left clicks are taken into account).
 You can use PreciseCpsCounter from other plugins to get the CPS of a player using the public function getCps:
 
