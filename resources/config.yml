@@ -1,0 +1,6 @@
+---
+# Wether to count right clicks on blocks
+# If enabled, this causes an incorrect CPS measurement when players click on blocks while moving/changing their rotation (see known issues)
+# If disabled, all left clicks to blocks are not counted
+count-left-click-on-block: true
+...

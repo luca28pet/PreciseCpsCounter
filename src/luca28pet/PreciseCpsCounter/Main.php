@@ -22,10 +22,15 @@ class Main extends PluginBase implements Listener{
 
     private const ARRAY_MAX_SIZE = 100;
 
+    /** @var bool */
+    private $countLeftClickBlock;
+
     /** @var array[] */
     private $clicksData = [];
 
     public function onEnable() : void{
+        $this->saveDefaultConfig();
+        $this->countLeftClickBlock = $this->getConfig()->get('count-left-click-on-block');
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
@@ -74,7 +79,7 @@ class Main extends PluginBase implements Listener{
             (
                 ($e->getPacket()::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $e->getPacket()->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) ||
                 ($e->getPacket()::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $e->getPacket()->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) ||
-                ($e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerActionPacket::ACTION_START_BREAK)
+                ($this->countLeftClickBlock && $e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerActionPacket::ACTION_START_BREAK)
             )
         ){
             $this->addClick($e->getPlayer());
