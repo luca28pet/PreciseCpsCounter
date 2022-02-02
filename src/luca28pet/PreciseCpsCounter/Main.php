@@ -10,7 +10,9 @@ use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\PlayerActionPacket;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
-use pocketmine\Player;
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
+use pocketmine\network\mcpe\protocol\types\PlayerAction;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use function array_unshift;
 use function array_pop;
@@ -36,13 +38,13 @@ class Main extends PluginBase implements Listener{
     }
 
     public function initPlayerClickData(Player $p) : void{
-        $this->clicksData[$p->getLowerCaseName()] = [];
+        $this->clicksData[mb_strtolower($p->getName())] = [];
     }
 
     public function addClick(Player $p) : void{
-        array_unshift($this->clicksData[$p->getLowerCaseName()], microtime(true));
-        if(count($this->clicksData[$p->getLowerCaseName()]) >= self::ARRAY_MAX_SIZE){
-            array_pop($this->clicksData[$p->getLowerCaseName()]);
+        array_unshift($this->clicksData[mb_strtolower($p->getName())], microtime(true));
+        if(count($this->clicksData[mb_strtolower($p->getName())]) >= self::ARRAY_MAX_SIZE){
+            array_pop($this->clicksData[mb_strtolower($p->getName())]);
         }
     }
 
@@ -53,17 +55,17 @@ class Main extends PluginBase implements Listener{
      * @return float
      */
     public function getCps(Player $player, float $deltaTime = 1.0, int $roundPrecision = 1) : float{
-        if(!isset($this->clicksData[$player->getLowerCaseName()]) || empty($this->clicksData[$player->getLowerCaseName()])){
+        if(!isset($this->clicksData[mb_strtolower($player->getName())]) || empty($this->clicksData[mb_strtolower($player->getName())])){
             return 0.0;
         }
         $ct = microtime(true);
-        return round(count(array_filter($this->clicksData[$player->getLowerCaseName()], static function(float $t) use ($deltaTime, $ct) : bool{
+        return round(count(array_filter($this->clicksData[mb_strtolower($player->getName())], static function(float $t) use ($deltaTime, $ct) : bool{
             return ($ct - $t) <= $deltaTime;
         })) / $deltaTime, $roundPrecision);
     }
 
     public function removePlayerClickData(Player $p) : void{
-        unset($this->clicksData[$p->getLowerCaseName()]);
+        unset($this->clicksData[mb_strtolower($p->getName())]);
     }
 
     public function playerJoin(PlayerJoinEvent $e) : void{
@@ -75,15 +77,15 @@ class Main extends PluginBase implements Listener{
     }
 
     public function packetReceive(DataPacketReceiveEvent $e) : void{
-        if(
-            isset($this->clicksData[$e->getPlayer()->getLowerCaseName()]) &&
+        $player = $e->getOrigin()->getPlayer();
+        if($player !== null && isset($this->clicksData[mb_strtolower($player->getName())]) &&
             (
                 ($e->getPacket()::NETWORK_ID === InventoryTransactionPacket::NETWORK_ID && $e->getPacket()->trData instanceof UseItemOnEntityTransactionData) ||
-                ($e->getPacket()::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $e->getPacket()->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) ||
-                ($this->countLeftClickBlock && $e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerActionPacket::ACTION_START_BREAK)
+                ($e->getPacket()::NETWORK_ID === LevelSoundEventPacket::NETWORK_ID && $e->getPacket()->sound === LevelSoundEvent::ATTACK_NODAMAGE) ||
+                ($this->countLeftClickBlock && $e->getPacket()::NETWORK_ID === PlayerActionPacket::NETWORK_ID && $e->getPacket()->action === PlayerAction::START_BREAK)
             )
         ){
-            $this->addClick($e->getPlayer());
+            $this->addClick($player);
         }
     }
 

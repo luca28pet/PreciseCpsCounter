@@ -12,7 +12,7 @@ An example of how you can use this plugin:
 
 - Sending the CPS in a popup every second. 
     ```
-    $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $_) : void{
+    $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
         foreach($this->getServer()->getOnlinePlayers() as $p){
             $p->sendPopup('CPS: '.$this->getCps($p));
         }
