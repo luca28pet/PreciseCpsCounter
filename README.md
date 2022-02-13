@@ -11,7 +11,7 @@ You can use PreciseCpsCounter from other plugins to get the CPS of a player usin
 An example of how you can use this plugin:
 
 - Sending the CPS in a popup every second. 
-    ```
+    ```php
     $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
         foreach($this->getServer()->getOnlinePlayers() as $p){
             $p->sendPopup('CPS: '.$this->getCps($p));
